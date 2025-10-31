@@ -457,7 +457,7 @@ const getWatchHistory = asyncHandler( async (req,res)=>{
     [
       {
         $match: {
-          _id : new mongoose.Types.ObjectId(req.user._id)//here mogoose dont automatically convert id to ObjectId(id) hence use this
+          _id : new mongoose.Types.ObjectId(String(req.user._id))//here mogoose dont automatically convert id to ObjectId(id) hence use this
         }
       },
       {
