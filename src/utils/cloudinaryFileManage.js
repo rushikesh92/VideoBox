@@ -1,11 +1,13 @@
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs' //file system
+import { extractPublicId } from 'cloudinary-build-url'
 
 cloudinary.config({
     cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
     api_key:process.env.CLOUDINARY_API_KEY,
     api_secret:process.env.CLOUDINARY_API_SECRET
 });
+
 
 const uploadOnCloudinary = async (localFilePath)=>{
     try {
@@ -29,11 +31,14 @@ const deleteFromCloudinary = async (url) =>{
     try {
         if(!url) return null;
 
-        //url format : https://res.cloudinary.com/demo/image/upload/publicId.jpg
+        const publicId = extractPublicId(url);
 
-        const publicId = url.split("/").slice(-1)[0].split(".")[0];
-        const res = await cloudinary.uploader.destroy(publicId);
-        // console.log("delete", publicId  , " : " , res )
+        let resourceType = "image";
+        if (url.includes("/video/")) resourceType = "video";
+        else if (url.includes("/raw/")) resourceType = "raw";
+
+        const res = await cloudinary.uploader.destroy(publicId,  { resource_type: resourceType});
+        // console.log("Delete result: ", publicId  , " : " , res )
         return res;
         
     } catch (error) {

@@ -80,7 +80,7 @@ const registerUser = asyncHandler(async (req, res) => {
     coverImageRes = await uploadOnCloudinary(coverImageLocalPath);
   }
   if (!avatarRes) {
-    throw new ApiError(400, "Avatar file is required");
+    throw new ApiError(500, "Error while uploading Avatar file on cloudinary");
 
   }
 
@@ -99,6 +99,8 @@ const registerUser = asyncHandler(async (req, res) => {
   );
 
   if (!createdUser) {
+    await deleteFromCloudinary(avatarRes.url);
+    if(coverImageRes) await deleteFromCloudinary(coverImageRes.url);
     throw new ApiError(500, "Something went wrong while registering user");
   }
 
