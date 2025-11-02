@@ -11,7 +11,7 @@ const publishVideo = asyncHandler(async (req, res) => {
     const { title, description } = req.body;
 
     if (!title || !description) {
-        throw new ApiError(400, 'title and description is missing')
+        throw new ApiError(400, 'title or description is missing')
     }
 
     let videoLocalPath;
@@ -45,7 +45,7 @@ const publishVideo = asyncHandler(async (req, res) => {
     // console.log(videoRes)
     const video = await Video.create({
         title: title,
-        descrition: description,
+        description: description,
         owner: req.user?._id,
         videoFile: videoRes.url,
         thumbnail: thumbnailRes.url,
@@ -97,10 +97,95 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const updateVideoDetails = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    const {title,description} = req.body;
-    //incomplete
+    const { title, description } = req.body;
 
-})
+    if(!(title || description)){
+        throw new ApiError(400 ,'Atleast one of title or description is required for updating details');
+    }
+    if(!videoId){
+        throw new ApiError(400,'videoId param is missing');
+    }
+
+    const video = await Video.findById(videoId);
+    if(!video){
+        throw new ApiError (404 ,'Video not found')
+    }
+    
+    if(!(video.owner).equals(req.user?._id)){
+        throw new ApiError (401 ,'Only video publisher can update video');
+    }
+
+    const updateData ={};
+    if( title && title.trim() !== "") updateData.title = title.trim();
+    if( description !== undefined) updateData.description = description.trim();
+
+    const updatedVideo = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $set: updateData 
+        },
+        {
+            new: true
+        }
+    )
+    if(!updatedVideo){
+        throw new ApiError (500 ,'Error while updating video details')
+    }
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200 , updatedVideo , 'Video details updated succeessfuly')
+    );
+
+});
+
+const updateThumbnail = asyncHandler( async(req,res)=>{
+    const { videoId } = req.params;
+    const thumbnailLocalPath = req.file?.path;
+    if(!videoId){
+        throw new ApiError(400,'videoId param is missing');
+    }
+    if(!thumbnailLocalPath){
+        throw new ApiError(400,'thumbnail file is missing');
+    }
+
+    const video = await Video.findById(videoId);
+    if(!video){
+        throw new ApiError (404 ,'Video not found')
+    }
+    
+    if(!(video.owner).equals(req.user?._id)){
+        throw new ApiError (401 ,'Only video publisher can update video thumbnail');
+    }
+
+    const thumbnailRes = await uploadOnCloudinary(thumbnailLocalPath);
+    if(!thumbnailRes){
+        throw new ApiError (500 ,'Error uploading thumbnail on cloudinary')
+    } 
+    
+    const updatedVideo = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $set: {
+                thumbnail:thumbnailRes.url
+            } 
+        },
+        {
+            new: true
+        }
+    )
+    if(!updatedVideo){
+        await deleteFromCloudinary(thumbnailRes.url);
+        throw new ApiError (500 ,'Error while updating video thumbnail')
+    }
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200 , updatedVideo , 'Video thumbnail updated succeessfuly')
+    );
+
+
+});
 
 const getVideoById = asyncHandler(async (req, res) => {
 
@@ -179,5 +264,6 @@ export {
     getVideoById,
     getAllVideos,
     getAllVideosOfChannel,
-    updateVideoDetails
+    updateVideoDetails,
+    updateThumbnail
 }
