@@ -22,10 +22,11 @@ app.use(cookieParser());
 import userRouter from "./routes/user.routes.js"
 import subcriptionRouter from './routes/subscription.routes.js';
 import videoRouter from './routes/video.routes.js';
+import healthcheckRouter from './routes/healthcheck.routes.js';
 
 //route declaration
 app.use('/api/v1/users' , userRouter);
 app.use('/api/v1/subscriptions' , subcriptionRouter)
 app.use('/api/v1/videos' , videoRouter);
-
+app.use('/api/v1/healthcheck',healthcheckRouter)
 export {app} 
