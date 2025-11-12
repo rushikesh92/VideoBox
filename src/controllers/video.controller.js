@@ -4,6 +4,8 @@ import { asyncHandler } from '../utils/asyncHandler.js'
 import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinaryFileManage.js";
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { paginate } from "mongoose-paginate-v2";
+import { VideoView } from "../models/VideoView.model.js";
+import { User } from "../models/User.model.js";
 
 const publishVideo = asyncHandler(async (req, res) => {
 
@@ -198,13 +200,28 @@ const getVideoById = asyncHandler(async (req, res) => {
     if (!video) {
         throw new ApiError(404, 'Video not found');
     }
+    //increment views
+    const existedview = await VideoView.findOne({videoId:videoId ,userId: req.user?._id });
+    if(!existedview ){
+        await VideoView.create({videoId:videoId , userId:req.user._id});
+        video.views += 1;
+        await video.save({ validateBeforeSave : false })
+    }
+    //add video to current users watch history
+    await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $addToSet:{ watchHistory: video._id}
+        }
+        
+    );
 
     return res
         .status(200)
         .json(
             new ApiResponse(200, video, 'Video fetched successfully')
         );
-});65
+});
 
 
 const getAllVideos = asyncHandler( async(req,res)=>{
