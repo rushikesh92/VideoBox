@@ -201,11 +201,13 @@ const getVideoById = asyncHandler(async (req, res) => {
         throw new ApiError(404, 'Video not found');
     }
     //increment views
-    const existedview = await VideoView.findOne({videoId:videoId ,userId: req.user?._id });
-    if(!existedview ){
-        await VideoView.create({videoId:videoId , userId:req.user._id});
-        video.views += 1;
-        await video.save({ validateBeforeSave : false })
+    if(req.user && req.user._id){
+        const existedview = await VideoView.findOne({videoId:videoId ,userId: req.user?._id });
+        if(!existedview  ){
+            await VideoView.create({videoId:videoId , userId:req.user._id});
+            video.views += 1;
+            await video.save({ validateBeforeSave : false })
+        }
     }
     //add video to current users watch history
     await User.findByIdAndUpdate(
