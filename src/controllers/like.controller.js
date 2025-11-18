@@ -139,7 +139,6 @@ const getLikedTweets = asyncHandler(async (req, res) => {
 
 const getLikeCountOnContent = asyncHandler(async (req, res) => {
     const { contentId, model } = req.body;
-    const userId = req.user?._id;
     if (!contentId || !model) {
         throw new ApiError(400, 'Both contentId and model is required');
     }

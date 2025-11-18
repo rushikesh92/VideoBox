@@ -4,11 +4,9 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const likeRouter = Router();
 
-likeRouter.use(verifyJWT);
-
-likeRouter.route('/toggle').post(toggleLike);
-likeRouter.route('/videos').get(getLikedVideos);
-likeRouter.route('/tweets').get(getLikedTweets);
+likeRouter.route('/toggle').post(verifyJWT,toggleLike);
+likeRouter.route('/videos').get(verifyJWT, getLikedVideos);
+likeRouter.route('/tweets').get(verifyJWT , getLikedTweets);
 likeRouter.route('/count/').get(getLikeCountOnContent);
 
 
