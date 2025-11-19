@@ -30,15 +30,9 @@ import likeRouter from './routes/like.routes.js';
 import dashboardRouter from './routes/dashboard.routes.js';
 
 
-app.get("/", (req, res) => {
-    res.status(200).json({
-        message: "Videobox Backend is running",
-        documentation: "https://github.com/rushikesh92/videobox/#readme",
-        status: "ok"
-    });
-});
 
 //route declaration
+app.get("/", healthcheckRouter);
 app.use('/api/v1/users' , userRouter);
 app.use('/api/v1/subscriptions' , subcriptionRouter);
 app.use('/api/v1/videos' , videoRouter);
