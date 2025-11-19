@@ -7,7 +7,7 @@ const healthcheck = asyncHandler(async(req ,res)=>{
     const health = {
         uptime : process.uptime(),
         message :'Videobox Backend is running',
-        documentation: "https://github.com/rushikesh92/videobox/docs/#api",
+        documentation: "https://github.com/rushikesh92/VideoBox/blob/main/docs/api.md",
         timestamp: Date.now()
     };
 
