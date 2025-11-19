@@ -1,0 +1,730 @@
+openapi: 3.0.3
+info:
+  title: VideoBox Server
+  contact: {}
+  version: 1.0.0
+servers:
+- url: "{{server}}"
+- url: https://videobox-prrk.onrender.com/api/v1
+tags:
+- name: User
+- name: Update
+- name: Get Info
+- name: auth
+- name: subscriptions
+- name: video
+- name: Comments
+- name: health
+- name: tweets
+- name: playlists
+- name: likes
+- name: dashboard
+paths:
+  /users/update-account:
+    patch:
+      tags:
+      - User
+      - Update
+      summary: update-account
+      description: update-account
+      operationId: updateAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/users_updateaccount_body"
+            examples:
+              update-account:
+                value:
+                  newEmail: <new email>
+                  newFullName: <fullname>
+      responses:
+        "200":
+          description: ""
+  /users/avatar:
+    patch:
+      tags:
+      - User
+      - Update
+      summary: update avatar
+      description: update avatar
+      operationId: updateAvatar
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/users_avatar_body"
+      responses:
+        "200":
+          description: ""
+  /users/cover-image:
+    patch:
+      tags:
+      - User
+      - Update
+      summary: update cover image
+      description: update cover image
+      operationId: updateCoverImage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/users_coverimage_body"
+      responses:
+        "200":
+          description: ""
+  /users/history:
+    get:
+      tags:
+      - User
+      - Get Info
+      summary: watch history
+      description: watch history
+      operationId: watchHistory
+      responses:
+        "200":
+          description: ""
+  /users/channel/{username}:
+    get:
+      tags:
+      - User
+      - Get Info
+      summary: get channel info
+      description: get channel info
+      operationId: getChannelInfo
+      requestBody:
+        
+      responses:
+        "200":
+          description: ""
+  /users/current-user:
+    get:
+      tags:
+      - User
+      - auth
+      summary: current-user
+      description: current-user
+      operationId: currentUser
+      responses:
+        "200":
+          description: ""
+  /users/change-password:
+    patch:
+      tags:
+      - User
+      - auth
+      summary: change-password
+      description: change-password
+      operationId: changePassword
+      parameters:
+      - name: ""
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/users_changepassword_body"
+            examples:
+              change-password:
+                value:
+                  newPassword: <new pass>
+                  oldPassword: <old pass>
+      responses:
+        "200":
+          description: ""
+  /users/register:
+    post:
+      tags:
+      - User
+      - auth
+      summary: register
+      description: register
+      operationId: register
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/users_register_body"
+      responses:
+        "200":
+          description: ""
+  /users/login:
+  post:
+    tags:
+      - User
+      - auth
+    summary: login
+    description: Login user with email or username
+    operationId: login
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: "<email>"
+              username:
+                type: string
+                example: "<username>"
+              password:
+                type: string
+                example: "<password>"
+            description: "Either email or username must be provided"
+          examples:
+            loginWithEmail:
+              summary: Login using email
+              value:
+                email: "<email>"
+                password: "<password>"
+            loginWithUsername:
+              summary: Login using username
+              value:
+                username: "<username>"
+                password: "<password>"
+    responses:
+      "200":
+        description: "success"
+
+  /users/logout:
+    post:
+      tags:
+      - User
+      - auth
+      summary: logout
+      description: logout
+      operationId: logout
+      responses:
+        "200":
+          description: ""
+  /users/refresh-token:
+    post:
+      tags:
+      - User
+      - auth
+      summary: refresh-token
+      description: refresh-token
+      operationId: refreshToken
+      responses:
+        "200":
+          description: ""
+  /subscriptions/subscribe/{channelId}:
+    post:
+      tags:
+      - subscriptions
+      summary: subscribe
+      description: subscribe
+      operationId: subscribe
+      responses:
+        "200":
+          description: ""
+  /subscriptions/:
+    get:
+      tags:
+      - subscriptions
+      summary: all current user subscriptions
+      description: all current user subscriptions
+      operationId: allCurrentUserSubscriptions
+      requestBody:
+        content:
+          application/json:
+            examples:
+              all current user subscriptions:
+                value: ""
+      responses:
+        "200":
+          description: ""
+  /subscriptions/my-subscribers:
+    get:
+      tags:
+      - subscriptions
+      summary: all subscribers
+      description: all subscribers
+      operationId: allSubscribers
+      responses:
+        "200":
+          description: ""
+  /subscriptions/unsubscribe/{channelId}:
+    delete:
+      tags:
+      - subscriptions
+      summary: unsubscribe
+      description: unsubscribe
+      operationId: unsubscribe
+      responses:
+        "200":
+          description: ""
+  /videos/publish:
+    post:
+      tags:
+      - video
+      summary: publish video
+      description: publish video
+      operationId: publishVideo
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/videos_publish_body"
+      responses:
+        "200":
+          description: ""
+  /videos/{videoId}:
+    get:
+      tags:
+      - video
+      summary: get video by id
+      description: get video by id
+      operationId: getVideoById
+      responses:
+        "200":
+          description: ""
+    delete:
+      tags:
+      - video
+      summary: delete video
+      description: delete video
+      operationId: deleteVideo
+      responses:
+        "200":
+          description: ""
+  /videos:
+    get:
+      tags:
+      - video
+      summary: all videos
+      description: all videos
+      operationId: allVideos
+      parameters:
+      - name: page
+        in: query
+        description: default is 1
+        required: false
+        schema:
+          type: string
+          example: "1"
+      - name: limit
+        in: query
+        description: default is 10
+        required: false
+        schema:
+          type: string
+          example: "5"
+      responses:
+        "200":
+          description: ""
+  /videos/channel/{channelId}:
+    get:
+      tags:
+      - video
+      summary: all videos of channel
+      description: all videos of channel
+      operationId: allVideosOfChannel
+      parameters:
+      - name: page
+        in: query
+        description: default is 1
+        required: false
+        schema:
+          type: string
+          example: "1"
+      - name: limit
+        in: query
+        description: default is 10
+        required: false
+        schema:
+          type: string
+          example: "5"
+      responses:
+        "200":
+          description: ""
+  /videos/{videoId}:
+    patch:
+      tags:
+      - video
+      summary: update video details
+      description: update video details
+      operationId: updateVideoDetails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/videos_69061d3448a9742a0dabc1a6_body"
+            examples:
+              update video details:
+                value:
+                  description: actually same video
+                  title: Seccond earth that is also rotating
+      responses:
+        "200":
+          description: ""
+  /videos/thumbnail/{videoId}:
+    patch:
+      tags:
+      - video
+      summary: update thumbnail
+      description: update thumbnail
+      operationId: updateThumbnail
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/thumbnail_6907902fad8a5e41aedc84ab_body"
+      responses:
+        "200":
+          description: ""
+  /comments/video/{videoId}:
+    get:
+      tags:
+      - Comments
+      summary: all comments on video
+      description: all comments on video
+      operationId: allCommentsOnVideo
+      responses:
+        "200":
+          description: ""
+    post:
+      tags:
+      - Comments
+      summary: add comment on video
+      description: add comment on video
+      operationId: addCommentOnVideo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/video_6907902fad8a5e41aedc84ab_body"
+            examples:
+              add comment on video:
+                value:
+                  comment: this video made my day
+      responses:
+        "200":
+          description: ""
+  /comments/{commentId}:
+    patch:
+      tags:
+      - Comments
+      summary: update comment
+      description: update comment
+      operationId: updateComment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/comments_6908a08ca28c5990456bc136_body"
+            examples:
+              update comment:
+                value:
+                  comment: who is watching in 2088
+      responses:
+        "200":
+          description: ""
+  /comments/{commentId}:
+    delete:
+      tags:
+      - Comments
+      summary: delete comment
+      description: delete comment
+      operationId: deleteComment
+      responses:
+        "200":
+          description: ""
+  /healthcheck:
+    get:
+      tags:
+      - health
+      summary: healthcheck
+      description: healthcheck
+      operationId: healthcheck
+      responses:
+        "200":
+          description: ""
+  /tweets/:
+    post:
+      tags:
+      - tweets
+      summary: create tweet
+      description: create tweet
+      operationId: createTweet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tweets_body"
+            examples:
+              create tweet:
+                value:
+                  content: I am the god.
+      responses:
+        "200":
+          description: ""
+  /tweets/{tweetID}:
+    get:
+      tags:
+      - tweets
+      summary: get tweet
+      description: get tweet
+      operationId: getTweet
+      responses:
+        "200":
+          description: ""
+  /tweets/user/{userId}:
+    get:
+      tags:
+      - tweets
+      summary: get all tweets of user
+      description: get all tweets of user
+      operationId: getTweetsOfUser
+      responses:
+        "200":
+          description: ""
+  /tweets/all:
+    get:
+      tags:
+      - tweets
+      summary: get all tweets
+      description: get all tweets
+      operationId: getAllTweets
+      responses:
+        "200":
+          description: ""
+  /tweets/{tweetId}:
+    delete:
+      tags:
+      - tweets
+      summary: delete tweet
+      description: delete tweet
+      operationId: deleteTweet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tweets_6908fd235dffd59533130a3a_body"
+            examples:
+              delete tweet:
+                value:
+                  content: I am the god.
+      responses:
+        "200":
+          description: ""
+    patch:
+      tags:
+      - tweets
+      summary: update tweet
+      description: update tweet
+      operationId: updateTweet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tweets_6908fd235dffd59533130a3a_body_1"
+            examples:
+              update tweet:
+                value:
+                  content: I am the god. fr c
+      responses:
+        "200":
+          description: ""
+  /playlists/:
+    post:
+      tags:
+      - playlists
+      summary: create playlist
+      description: create playlist
+      operationId: createPlaylist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/playlists_body"
+            examples:
+              create playlist:
+                value:
+                  description: '<desc>'
+                  name: '<name>'
+      responses:
+        "200":
+          description: ""
+  /playlists/{playlistId}:
+    get:
+      tags:
+      - playlists
+      summary: get playlist
+      description: get playlist
+      operationId: getPlaylist
+      responses:
+        "200":
+          description: ""
+    patch:
+      tags:
+      - playlists
+      summary: update playlist info
+      description: update playlist info
+      operationId: updatePlaylistInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/playlists_6909ffa3331d158af6ebebe1_body"
+            examples:
+              update playlist info:
+                value:
+                  description: ""
+                  name: Rain play
+      responses:
+        "200":
+          description: ""
+  /playlists/add/{playlistId}:
+    patch:
+      tags:
+      - playlists
+      summary: add videos to playlist
+      description: add videos to playlist
+      operationId: addVideosToPlaylist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/add_6909ffa3331d158af6ebebe1_body"
+            examples:
+              add videos to playlist:
+                value:
+                  videoIds:
+                  - 690a0d7014a176f1ae0d719c
+                  - 6909ffa3331d158af6ebebe1
+      responses:
+        "200":
+          description: ""
+  /playlists/remove/{playlistId}:
+    patch:
+      tags:
+      - playlists
+      summary: remove videos from playlist
+      description: remove videos from playlist
+      operationId: removeVideosFromPlaylist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/remove_6909ffa3331d158af6ebebe1_body"
+            examples:
+              remove videos from playlist:
+                value:
+                  videoIds:
+                  - 6907902fad8a5e41aedc84ab
+                  - 6909ffa3331d158af6ebebe1
+      responses:
+        "200":
+          description: ""
+  /playlists/{playlistId}:
+    delete:
+      tags:
+      - playlists
+      summary: delete playlist
+      description: delete playlist
+      operationId: deletePlaylist
+      responses:
+        "200":
+          description: ""
+  /playlists/user/{userId}:
+    get:
+      tags:
+      - playlists
+      summary: get playlists of user
+      description: get playlists of user
+      operationId: getPlaylistsOfUser
+      responses:
+        "200":
+          description: ""
+  /likes/toggle:
+    post:
+      tags:
+      - likes
+      summary: "toggle like [video]"
+      description: "toggle like [video]"
+      operationId: toggleLikeVideo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/likes_toggle_body"
+            examples:
+              toggle like [comment]:
+                value:
+                  contentId: 6908a172f3358c9d93cf6ebc
+                  model: Comment
+              toggle like [video]:
+                value:
+                  contentId: 690a0d7014a176f1ae0d719c
+                  model: Video
+              toggle like[tweet]:
+                value:
+                  contentId: 6908fefe2dc686d13884eed7
+                  model: Tweet
+      responses:
+        "200":
+          description: ""
+  /likes/videos:
+    get:
+      tags:
+      - likes
+      summary: get liked videos
+      description: get liked videos
+      operationId: getLikedVideos
+      responses:
+        "200":
+          description: ""
+  /likes/tweets:
+    get:
+      tags:
+      - likes
+      summary: get liked tweets
+      description: get liked tweets
+      operationId: getLikedTweets
+      responses:
+        "200":
+          description: ""
+  /likes/count/:
+    get:
+      tags:
+      - likes
+      summary: like count on content
+      description: like count on content
+      operationId: likeCountOnContent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/likes_count_body"
+            examples:
+              like count on content:
+                value:
+                  contentId: 690a0d7014a176f1ae0d719c
+                  model: Video
+      responses:
+        "200":
+          description: ""
+  /dashboard/channel/{channelId}:
+    get:
+      tags:
+      - dashboard
+      summary: channel stats
+      description: channel stats
+      operationId: channelStats
+      responses:
+        "200":
+          description: ""
+  /:
+    get:
+      summary: base url
+      description: base url
+      operationId: baseUrl
+      responses:
+        "200":
+          description: ""
