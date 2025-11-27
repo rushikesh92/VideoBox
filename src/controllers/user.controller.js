@@ -27,25 +27,10 @@ const generateAccessTokenAndRefreshToken = async(userId)=>{
 }
 
 
-// steps to register
-/**
- * get user details from frontend
- * validate email
- * check if user already exists(uniqueness of email and username)
- * check if avatar and banner provided
- * upload them to cloudinary
- * create User object => create entry in DB
- * check status of User creation
- * remove password and refresh token from response 
- * return res
- */
+
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, username, password } = req.body;
-  // console.log(fullName," ",email," ",username);
-  //   res.status(200  ).json({
-  //     message: "ok",
-
-  // })
+ 
 
   if (
     [fullName, email, username, password].some((field) => (!field))//if any of feild is empty return true
@@ -112,15 +97,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
 });
 
-//steps to login
-/**
- * get user details from frontend
- * check if they are not empty 
- * validate password 
- * generate refresh token and access token
- * send token in cookie
- * return res
- */
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -132,7 +108,6 @@ const loginUser = asyncHandler(async (req, res) => {
   const existedUser = await User.findOne({ 
     $or :[ { username } , { email }]
    });
-  // console.log(existedUser, "  eu");
   
   if (!existedUser) {
     throw new ApiError(404, "User does not exist");
@@ -148,7 +123,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const loggedInUser =await User.findById(existedUser._id).select("-password -refreshToken");
   
-  const cookieOptions ={//to make cookie only modifiable by server not frontend
+  const cookieOptions ={
       httpOnly:true,
       secure :true
   }
@@ -168,8 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 });
 
-//delete cookies 
-//remove refreshToken from DB
+
 
 const logoutUser = asyncHandler( async (req, res) =>{
 
